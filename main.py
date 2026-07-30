@@ -1,5 +1,9 @@
 import time
+import unicodedata
+from datetime import datetime
 from getpass import getpass
+
+from openpyxl import load_workbook
 
 from playwright.sync_api import (
     sync_playwright,
@@ -9,6 +13,26 @@ from playwright.sync_api import (
 
 DIARIO_URL = "https://diariofic.sp.senai.br/"
 
+def normalizar_nome(nome):
+    if nome is None:
+        return ""
+
+    nome = str(nome).strip().upper()
+
+    nome = unicodedata.normalize(
+        "NFKD",
+        nome
+    )
+
+    nome = "".join(
+        caractere
+        for caractere in nome
+        if not unicodedata.combining(caractere)
+    )
+
+    return " ".join(
+        nome.split()
+    )
 
 def obter_credenciais():
     print("\n=== Diário Eletrônico SENAI ===\n")
@@ -419,6 +443,56 @@ def abrir_turma_para_edicao(page, turma):
         "Tela de edição da turma aberta."
     )
 
+def abrir_registro_aula(page):
+    print("\nAbrindo registro de aula...")
+
+    botao = page.locator("#NovaAula")
+
+    botao.wait_for(
+        state="visible",
+        timeout=10000
+    )
+
+    botao.click()
+
+    print("Aguardando formulário de registro...")
+
+    page.get_by_text(
+        "Diário de Classe",
+        exact=False
+    ).wait_for(
+        state="visible",
+        timeout=10000
+    )
+
+    print("Formulário de registro de aula aberto.")
+
+def diagnosticar_tabela_alunos(page):
+    print("\n=== DIAGNÓSTICO - ALUNOS ===")
+
+    tabelas = page.locator("table")
+
+    print(
+        f"Tabelas encontradas: {tabelas.count()}"
+    )
+
+    for i in range(tabelas.count()):
+        tabela = tabelas.nth(i)
+
+        print(
+            f"\n--- TABELA {i} ---"
+        )
+
+        try:
+            print(
+                tabela.inner_text()
+            )
+        except Exception as erro:
+            print(
+                f"Não foi possível ler: {erro}"
+            )
+
+    print("\n=== FIM DO DIAGNÓSTICO ===")
 # def diagnosticar_turmas(page):
 #     print("\n===== DIAGNÓSTICO DA PÁGINA DE TURMAS =====")
 
@@ -503,6 +577,14 @@ def main():
             abrir_turma_para_edicao(
                 page,
                 turma
+            )
+
+            abrir_registro_aula(
+                page
+            )
+
+            diagnosticar_tabela_alunos(
+                page
             )
 
             page.pause()
