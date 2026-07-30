@@ -1,6 +1,6 @@
-# Automação do Diário Eletrônico SENAI
+# Automação do Diário Eletrônico
 
-Automação em Python para auxiliar no registro de aulas e frequência de alunos no **Diário Eletrônico SENAI**, utilizando **Playwright** para interação com o sistema web e **OpenPyXL** para leitura de uma planilha Excel.
+Automação em Python para auxiliar no registro de aulas e frequência de alunos no **Diário Eletrônico**, utilizando **Playwright** para interação com o sistema web e **OpenPyXL** para leitura de uma planilha Excel.
 
 O projeto foi criado para reduzir o trabalho manual de registrar várias aulas de uma turma, mantendo uma etapa de confirmação antes do processamento em lote e validações para evitar registros inconsistentes ou duplicados.
 
@@ -136,9 +136,9 @@ Exemplo simplificado:
 
 | Nome | 07 | 08 | 13 |
 |---|---|---|---|
-| AIRTON GABRIEL MENDES ASSUNÇÃO | . | . | I |
-| FLORENCE MANIUS | I | . | . |
-| RODRIGO VINICIUS MARTINS | I | . | . |
+| Fulano 1 | . | . | I |
+| Fulano 2 | I | . | . |
+| Fulano 3 | I | . | . |
 
 > A automação faz a associação com o Diário pelo nome. Os nomes são normalizados, removendo diferenças de maiúsculas/minúsculas, acentos e espaços extras, mas o ideal é manter os nomes o mais próximos possível dos exibidos no Diário.
 
@@ -219,7 +219,7 @@ python main.py
 O programa irá solicitar:
 
 ```text
-=== Diário Eletrônico SENAI ===
+=== Diário Eletrônico ===
 
 Digite seu NIF:
 Digite sua senha:
@@ -336,7 +336,7 @@ Quando o Excel contém `I`, o programa:
 Exemplo:
 
 ```text
-FLORENCE MANIUS -> FALTA | detalhamento=1 | período=03:00
+Fulano 2 -> FALTA | detalhamento=1 | período=03:00
 ```
 
 Atualmente os códigos de detalhamento conhecidos são:
